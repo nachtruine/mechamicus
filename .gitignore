@@ -87,3 +87,8 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+googlecustomsearch.txt
+token.txt
+oldtreeignore.txt
+logs
