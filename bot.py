@@ -23,6 +23,10 @@ pfsrd_cx = '010353485282640597323:i406fguqdfe'
 nethys_cx = '012046020158994114137:raqss6g6jvy'
 
 
+def not_ready(name):
+    return str(name) + ' is not yet ready!'
+
+
 @bot.event
 async def on_ready():
     print('Logging in...')
@@ -50,14 +54,14 @@ async def on_message(msg):
     clean_message = str(msg.clean_content)
     str_content = str(msg.content[1:])
 
-    commands = dict(echo=msg.author.mention + ": Echo!",
-                    repeat=msg.author.mention + ": " + str_content[7:],
-                    credo=credo,
-                    deck=deck.parseDeckRequest(msg, decks.get(msg.server.name)),
-                    quote='Quote command under construction!',
-                    choose=random.choice(str_content[7:].split(',')),
-                    pfsrd=gcs.makeCustomSearch('d20pfsrd.com', pfsrd_cx, msg, len('/pfsrd ')),
-                    nethys=gcs.makeCustomSearch('archivesofnethys.com', nethys_cx, msg, len('/nethys '))
+    commands = dict(echo='msg.author.mention + \': Echo!\'',
+                    repeat='msg.author.mention + \': \' + str_content[7:]',
+                    credo='credo',
+                    deck='deck.parseDeckRequest(msg, decks.get(msg.server.name))',
+                    quote='not_ready(\'Quote\')',
+                    choose='random.choice(str_content[7:].split(\',\'))',
+                    pfsrd='gcs.makeCustomSearch(\'d20pfsrd.com\', pfsrd_cx, msg, len(\'/pfsrd \'))',
+                    nethys='gcs.makeCustomSearch(\'archivesofnethys.com\', nethys_cx, msg, len(\'/nethys \'))'
                     )
 
     if msg.author.bot:
@@ -72,7 +76,7 @@ async def on_message(msg):
     elif str(msg.content).startswith(prefix):
         for command in commands:
             if str_content.startswith(command):
-                await bot.send_message(msg.channel, commands[command])
+                await bot.send_message(msg.channel, eval(commands[command]))
                 return
 
 bot.run(token)
