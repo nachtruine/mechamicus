@@ -1,12 +1,10 @@
 import random
 import re
-from random import shuffle
 import discord
 
 from functions import dice, deck, gcs, log
 from functions.deck import NEW_DECK
 from functions.dice import total_dice_regex
-
 
 tokenFile = 'token.txt'
 with open(tokenFile, 'r') as f:
@@ -23,7 +21,7 @@ pfsrd_cx = '010353485282640597323:i406fguqdfe'
 nethys_cx = '012046020158994114137:raqss6g6jvy'
 
 
-def not_ready(name):
+def not_ready(name):  # artifact of the command parsing system
     return str(name) + ' is not yet ready!'
 
 
@@ -32,7 +30,8 @@ async def on_ready():
     print('Logging in...')
     for _ in bot.servers:
         print('Checking into ' + _.name)
-        decks[_.name] = shuffle(NEW_DECK.copy())
+        decks[_.name] = NEW_DECK.copy()
+        deck.shuffleDeck(decks[_.name])
     print("I am ready to serve.")
 
 
@@ -51,8 +50,15 @@ async def on_server_join(server):
 @bot.event
 async def on_message(msg):
     log.logMessage(msg)
+
     clean_message = str(msg.clean_content)
     str_content = str(msg.content[1:])
+
+    if msg.author.bot:
+        if str_content == 'Logging out...':
+            await bot.logout()
+        else:
+            return
 
     commands = dict(echo='msg.author.mention + \': Echo!\'',
                     repeat='msg.author.mention + \': \' + str_content[7:]',
@@ -61,11 +67,9 @@ async def on_message(msg):
                     quote='not_ready(\'Quote\')',
                     choose='random.choice(str_content[7:].split(\',\'))',
                     pfsrd='gcs.makeCustomSearch(\'d20pfsrd.com\', pfsrd_cx, msg, len(\'/pfsrd \'))',
-                    nethys='gcs.makeCustomSearch(\'archivesofnethys.com\', nethys_cx, msg, len(\'/nethys \'))'
+                    nethys='gcs.makeCustomSearch(\'archivesofnethys.com\', nethys_cx, msg, len(\'/nethys \'))',
+                    shutdown='Logging out...'
                     )
-
-    if msg.author.bot:
-        return
 
     if re.search(total_dice_regex, clean_message):  # message matches dice regex
         result = dice.parseDiceRequest(msg)
@@ -76,7 +80,10 @@ async def on_message(msg):
     elif str(msg.content).startswith(prefix):
         for command in commands:
             if str_content.startswith(command):
-                await bot.send_message(msg.channel, eval(commands[command]))
+                try:
+                    await bot.send_message(msg.channel, eval(commands[command]))
+                except SyntaxError:
+                    await bot.send_message(msg.channel, commands[command])
                 return
 
 bot.run(token)

@@ -75,28 +75,22 @@ def __removeUsedRequest(cmd):
 
 
 def parseDiceRequest(msg):
-    print('Rolling dice...')
+    comment = ''
 
-    content = msg.content
-    total_search = re.search(total_dice_regex, content)
-    cmd = total_search.group(1)
+    try:
+        command, comment = str(msg.content).split(" ", 1)
+    except ValueError:
+        command = str(msg.content)
 
-    if re.search(__bad_regex, cmd) is not None:
+    if re.search(__bad_regex, command) is not None:
         return
-
-    comment = total_search.group(2)
-
-    if type(comment) is str:
-        comment = comment[1:]
-    else:
-        comment = ''
 
     roll_result = 0
 
-    while cmd is not "":
-        add_result = __parseSingleRequest(cmd)
+    while command is not "":
+        add_result = __parseSingleRequest(command)
         roll_result += add_result
-        cmd = __removeUsedRequest(cmd)
+        command = __removeUsedRequest(command)
     if len(comment) > 0:
         end_result = '\"' + comment + '\": ' + str(listResults) + ' -> **' + str(roll_result) + '**'
     else:

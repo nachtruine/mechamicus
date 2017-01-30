@@ -15,22 +15,29 @@ NEW_DECK = ['Joker (Colored)', 'Joker (Uncolored)',
             ]
 
 
+def shuffleDeck(deck):
+    shuffle(deck)
+
+
 def parseDeckRequest(msg, deck):
-    content = str(msg.content)[6:]
-    if content.startswith('new'):
+    subcommand = ''
+    try:
+        trash, command, subcommand = str(msg.content).split(' ')
+    except ValueError:
+        trash, command = str(msg.content).split(' ')
+    if command.startswith('new'):
         deck = NEW_DECK
-        shuffle(deck)
+        shuffleDeck(deck)
         return 'Deck remade!'
-    elif content.startswith('shuffle'):
-        shuffle(deck)
+    elif command.startswith('shuffle'):
+        shuffleDeck(deck)
         return 'Shuffle complete!'
-    elif content.startswith('draw'):
+    elif command.startswith('draw'):
         if len(deck) < 1:
             return 'Deck is empty!'
         hand = []
-        content = str(content)[5:]
-        if content is not '':
-            num = int(content)
+        if subcommand is not '':
+            num = int(subcommand)
         else:
             num = 1
         for i in range(num):
@@ -40,5 +47,5 @@ def parseDeckRequest(msg, deck):
                 return str(hand) + '... Ran out of cards!'
             hand.append(card)
         return str(hand)
-    elif content.startswith(''):
-        return 'Available commands: new, shuffle, draw(x)'
+    elif command.startswith(''):
+        return 'Available commands: new, shuffle, draw num'
