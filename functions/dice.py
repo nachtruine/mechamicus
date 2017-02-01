@@ -75,12 +75,15 @@ def __removeUsedRequest(cmd):
 
 
 def parseDiceRequest(msg):
+    content = str(msg.content)
     comment = ''
+    if str(msg.content).startswith('/roll '):
+        content = content[len('/roll '):]
 
     try:
-        command, comment = str(msg.content).split(" ", 1)
+        command, comment = content.split(" ", 1)
     except ValueError:
-        command = str(msg.content)
+        command = content
 
     if re.search(__bad_regex, command) is not None:
         return

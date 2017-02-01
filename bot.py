@@ -61,6 +61,7 @@ async def on_message(msg):
             return
 
     commands = dict(echo='msg.author.mention + \': Echo!\'',
+                    roll='str(msg.author.mention + \': \' + dice.parseDiceRequest(msg))',
                     repeat='msg.author.mention + \': \' + str_content[7:]',
                     credo='credo',
                     deck='deck.parseDeckRequest(msg, decks.get(msg.server.name))',
@@ -72,9 +73,7 @@ async def on_message(msg):
                     )
 
     if re.search(total_dice_regex, clean_message):  # message matches dice regex
-        result = dice.parseDiceRequest(msg)
-        sent_message = str(msg.author.mention + ': ' + result)
-        await bot.send_message(msg.channel, sent_message)
+        await bot.send_message(msg.channel, str(msg.author.mention + ': ' + dice.parseDiceRequest(msg)))
         return
 
     elif str(msg.content).startswith(prefix):
