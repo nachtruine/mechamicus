@@ -90,5 +90,6 @@ ENV/
 
 googlecustomsearch.txt
 token.txt
-oldtreeignore.txt
 logs
+quotes
+tests

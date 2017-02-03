@@ -2,7 +2,7 @@ import random
 import re
 import discord
 
-from functions import dice, deck, gcs, log
+from functions import dice, deck, gcs, log, quote
 from functions.deck import NEW_DECK
 from functions.dice import total_dice_regex
 
@@ -38,7 +38,7 @@ async def on_ready():
 @bot.event
 async def on_member_join(member):
     await bot.send_message(member.server.default_channel,
-                           "Welcome, " + member.display_name + ", to " + member.server + "!")
+                           "Welcome, " + member.display_name + ", to " + member.server.name + "!")
 
 
 @bot.event
@@ -55,17 +55,17 @@ async def on_message(msg):
     str_content = str(msg.content[1:])
 
     if msg.author.bot:
-        if str_content == 'Logging out...':
+        if clean_message == 'Logging out...':
             await bot.logout()
         else:
             return
 
     commands = dict(echo='msg.author.mention + \': Echo!\'',
-                    roll='str(msg.author.mention + \': \' + dice.parseDiceRequest(msg))',
-                    repeat='msg.author.mention + \': \' + str_content[7:]',
+                    roll='str(dice.parseDiceRequest(msg))',
+                    repeat='str_content[7:]',
                     credo='credo',
                     deck='deck.parseDeckRequest(msg, decks.get(msg.server.name))',
-                    quote='not_ready(\'Quote\')',
+                    quote='quote.parseQuoteRequest(msg)',
                     choose='random.choice(str_content[7:].split(\',\'))',
                     pfsrd='gcs.makeCustomSearch(\'d20pfsrd.com\', pfsrd_cx, msg, len(\'/pfsrd \'))',
                     nethys='gcs.makeCustomSearch(\'archivesofnethys.com\', nethys_cx, msg, len(\'/nethys \'))',
@@ -80,7 +80,7 @@ async def on_message(msg):
         for command in commands:
             if str_content.startswith(command):
                 try:
-                    await bot.send_message(msg.channel, eval(commands[command]))
+                    await bot.send_message(msg.channel, msg.author.mention + ': ' + eval(commands[command]))
                 except SyntaxError:
                     await bot.send_message(msg.channel, commands[command])
                 return
