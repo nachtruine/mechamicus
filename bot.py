@@ -60,7 +60,7 @@ async def on_message(msg):
         else:
             return
 
-    commands = dict(echo='msg.author.mention + \': Echo!\'',
+    commands = dict(echo='\'Echo!\'',
                     roll='str(dice.parseDiceRequest(msg))',
                     repeat='str_content[7:]',
                     credo='credo',
