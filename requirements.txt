@@ -3,4 +3,4 @@ discord.py
 aiohttp
 websockets
 chardet
-googleapiclient
+google-api-python-client
