@@ -1,1 +1,1 @@
-worker: python -m disco.cli --token="$token" --run-bot --plugin simpleplugin
+worker: python -m bot.py --token="$token"
