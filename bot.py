@@ -1,4 +1,7 @@
-import random, re, discord, ast
+import random
+import re
+import discord
+import ast
 
 from functions import dice, deck, gcs, log, quote
 from functions.dice import total_dice_regex
