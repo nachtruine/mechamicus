@@ -47,5 +47,7 @@ def parseDeckRequest(msg, deck):
                 return str(hand) + '... Ran out of cards!'
             hand.append(card)
         return str(hand)
+    elif command.startswith('left'):
+        return 'This deck has ' + str(len(deck)) + " cards left."
     elif command.startswith(''):
-        return 'Available commands: new, shuffle, draw num'
+        return 'Available commands: new, shuffle, draw num, left'

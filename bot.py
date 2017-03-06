@@ -1,9 +1,6 @@
-import random
-import re
-import discord
+import random, re, discord, ast
 
 from functions import dice, deck, gcs, log, quote
-from functions.deck import NEW_DECK
 from functions.dice import total_dice_regex
 
 tokenFile = 'token.txt'
@@ -21,17 +18,13 @@ pfsrd_cx = '010353485282640597323:i406fguqdfe'
 nethys_cx = '012046020158994114137:raqss6g6jvy'
 
 
-def not_ready(name):  # artifact of the command parsing system
-    return str(name) + ' is not yet ready!'
-
-
 @bot.event
 async def on_ready():
     print('Logging in...')
-    for _ in bot.servers:
-        print('Checking into ' + _.name)
-        decks[_.name] = NEW_DECK.copy()
-        deck.shuffleDeck(decks[_.name])
+    for server in bot.servers:
+        print('Checking into ' + server.name)
+        decks[server.name] = deck.NEW_DECK.copy()
+        deck.shuffleDeck(decks[server.name])
     print("I am ready to serve.")
 
 
@@ -69,7 +62,8 @@ async def on_message(msg):
                     choose='random.choice(str_content[7:].split(\',\'))',
                     pfsrd='gcs.makeCustomSearch(\'d20pfsrd.com\', pfsrd_cx, msg, len(\'/pfsrd \'))',
                     nethys='gcs.makeCustomSearch(\'archivesofnethys.com\', nethys_cx, msg, len(\'/nethys \'))',
-                    shutdown='Logging out...'
+                    shutdown='Logging out...',
+                    calc='str(ast.literal_eval(str_content[5:]))'
                     )
 
     if re.search(total_dice_regex, clean_message):  # message matches dice regex
@@ -80,7 +74,7 @@ async def on_message(msg):
         for command in commands:
             if str_content.startswith(command):
                 try:
-                    await bot.send_message(msg.channel, msg.author.mention + ': ' + eval(commands[command]))
+                    await bot.send_message(msg.channel, msg.author.mention + ': ' + str(eval(commands[command])))
                 except SyntaxError:
                     await bot.send_message(msg.channel, commands[command])
                 return
