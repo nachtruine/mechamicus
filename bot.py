@@ -1,15 +1,17 @@
 import random
 import re
 import discord
-import ast
+import sys
 
+from datetime import datetime
 from functions import dice, deck, gcs, log, quote
 from functions.dice import total_dice_regex
 
-tokenFile = 'token.txt'
-with open(tokenFile, 'r') as f:
-    token = f.readline()
+token = sys.argv[1]
+gcsKey = sys.argv[2]
 
+pfsrd_cx = '010353485282640597323:i406fguqdfe'
+nethys_cx = '012046020158994114137:raqss6g6jvy'
 prefix = '/'
 credo = ('There is no truth in flesh, only betrayal. ' +
          'There is no strength in flesh, only weakness. ' +
@@ -17,8 +19,6 @@ credo = ('There is no truth in flesh, only betrayal. ' +
          'There is no certainty in flesh but death.')
 decks = {}
 bot = discord.Client()
-pfsrd_cx = '010353485282640597323:i406fguqdfe'
-nethys_cx = '012046020158994114137:raqss6g6jvy'
 
 
 @bot.event
@@ -51,10 +51,7 @@ async def on_message(msg):
     str_content = str(msg.content[1:])
 
     if msg.author.bot:
-        if clean_message == 'Logging out...':
-            await bot.logout()
-        else:
-            return
+        return
 
     commands = dict(echo='\'Echo!\'',
                     roll='str(dice.parseDiceRequest(msg))',
@@ -63,23 +60,29 @@ async def on_message(msg):
                     deck='deck.parseDeckRequest(msg, decks.get(msg.server.name))',
                     quote='quote.parseQuoteRequest(msg)',
                     choose='random.choice(str_content[7:].split(\',\'))',
-                    pfsrd='gcs.makeCustomSearch(\'d20pfsrd.com\', pfsrd_cx, msg, len(\'/pfsrd \'))',
-                    nethys='gcs.makeCustomSearch(\'archivesofnethys.com\', nethys_cx, msg, len(\'/nethys \'))',
-                    shutdown='Logging out...',
-                    calc='str(ast.literal_eval(str_content[5:]))'
+                    pfsrd='gcs.makeCustomSearch(\'d20pfsrd.com\', pfsrd_cx, msg, len(\'/pfsrd \'), gcsKey)',
+                    nethys='gcs.makeCustomSearch(\'archivesofnethys.com\', nethys_cx, msg, len(\'/nethys \'), gcsKey)',
+                    uptime='\'I have been up for: \' + str(datetime.now() - start_time)'
                     )
 
     if re.search(total_dice_regex, clean_message):  # message matches dice regex
-        await bot.send_message(msg.channel, str(msg.author.mention + ': ' + dice.parseDiceRequest(msg)))
+        try:
+            await bot.send_message(msg.channel, str(msg.author.mention + ': ' + dice.parseDiceRequest(msg)))
+        except TypeError:
+            return
         return
 
     elif str(msg.content).startswith(prefix):
         for command in commands:
             if str_content.startswith(command):
                 try:
-                    await bot.send_message(msg.channel, msg.author.mention + ': ' + str(eval(commands[command])))
+                    sendthis = str(eval(commands[command]))
+                    await bot.send_message(msg.channel, msg.author.mention + ': ' + sendthis)
                 except SyntaxError:
                     await bot.send_message(msg.channel, commands[command])
+                except ValueError:
+                    return
                 return
 
+start_time = datetime.now()
 bot.run(token)

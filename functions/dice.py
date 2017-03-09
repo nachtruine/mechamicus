@@ -86,12 +86,15 @@ def parseDiceRequest(msg):
         command = content
 
     if re.search(__bad_regex, command) is not None:
-        return
+        return None
 
     roll_result = 0
 
     while command is not "":
-        add_result = __parseSingleRequest(command)
+        try:
+            add_result = __parseSingleRequest(command)
+        except AttributeError:
+            return None
         roll_result += add_result
         command = __removeUsedRequest(command)
     if len(comment) > 0:

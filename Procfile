@@ -1,1 +1,1 @@
-worker: python -m bot.py --token="$token"
+worker: python -m bot.py $token $gcsKey
