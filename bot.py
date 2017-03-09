@@ -4,7 +4,7 @@ import discord
 import sys
 
 from datetime import datetime
-from functions import dice, deck, gcs, log, quote
+from functions import dice, deck, gcs, quote
 from functions.dice import total_dice_regex
 
 token = sys.argv[1]
@@ -45,8 +45,6 @@ async def on_server_join(server):
 
 @bot.event
 async def on_message(msg):
-    log.logMessage(msg)
-
     clean_message = str(msg.clean_content)
     str_content = str(msg.content[1:])
 
