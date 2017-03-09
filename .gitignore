@@ -87,10 +87,3 @@ ENV/
 
 # Rope project settings
 .ropeproject
-
-functions/log.py
-logs
-quotes
-tests
-token.txt
-googlecustomsearch.txt
