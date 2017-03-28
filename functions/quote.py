@@ -20,6 +20,8 @@ def parseQuoteRequest(msg, conn):
         list_quotes = []
         for i in cursor:
             list_quotes.append(i)
+        if len(list_quotes) < 1:
+            return 'No quotes found for this server.'
         return formatQuote(list_quotes)
     elif command.startswith('add'):
         trash, author, content = command.split(' ', 2)
@@ -38,4 +40,6 @@ def parseQuoteRequest(msg, conn):
         list_quotes = []
         for i in cursor:
             list_quotes.append(i)
+        if len(list_quotes) < 1:
+            return 'No quotes found for ' + author
         return formatQuote(list_quotes)
