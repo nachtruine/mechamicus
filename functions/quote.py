@@ -1,39 +1,41 @@
-import os
 import random
+from datetime import datetime
 
 
-def parseQuoteRequest(msg):
+def formatQuote(list_quotes):
+    index = random.randint(0, len(list_quotes)-1)
+    selected_quote = list_quotes[index]
+    return '{}: <{}/{}> {}'.format(selected_quote[0], index+1, len(list_quotes), selected_quote[1])
+
+
+def parseQuoteRequest(msg, conn):
     command = str(msg.clean_content)[len('/quote '):]
-    server = str(msg.server).replace(':', '')
-    str_channel = str(msg.channel)
-
-    log_file = ("quotes/" + server + "/" + str_channel + ".txt")
-
-    if command.startswith('add'):
-        trash, user, quote = command.split(' ', 2)
-        str_timestamp = str(msg.timestamp.strftime('%b %d, %Y'))
-        try:
-            with open(log_file, 'a+', encoding='utf-8') as f:
-                f.write('**' + user + '**: ' + quote + ' - ' + str_timestamp + '\n')
-        except IOError or FileNotFoundError:
-            os.makedirs("quotes/" + server)
-            with open(log_file, 'a+', encoding='utf-8') as f:
-                f.write('**' + user + '**: ' + quote + ' - ' + str_timestamp + '\n')
-        return 'Quote saved!'
-    elif command.startswith('random'):
-        lines = open(log_file).read().splitlines()
-        return random.choice(lines)
-    elif command == '':
-        return 'Available commands: add <name> <quote>, random, <name>'
+    serv_id = str(msg.server.id)
+    chan_id = str(msg.channel.id)
+    cursor = conn.cursor()
+    if len(command) < 1:
+        cursor.execute('''
+        SELECT author, text FROM Quotes
+        WHERE chan_id = %s''', (chan_id,))
+        list_quotes = []
+        for i in cursor:
+            list_quotes.append(i)
+        return formatQuote(list_quotes)
+    elif command.startswith('add'):
+        trash, author, content = command.split(' ', 2)
+        cursor.execute('''
+        INSERT INTO Quotes(id, serv_id, chan_id, author, text, date)
+        VALUES(DEFAULT, %s, %s, %s, %s, %s)
+        ''', (serv_id, chan_id, author, content, str(datetime.today().date())))
+        conn.commit()
+        return 'Quote added!'
     else:
-        lines = open(log_file).read().splitlines()
-        quotes_from_user = []
-        for quote in lines:
-            name, speech = quote.split(' ', 1)
-            name = str(name).replace('*', '')
-            if command == name[:-1]:
-                quotes_from_user.append(quote)
-        if len(quotes_from_user) > 0:
-            return random.choice(quotes_from_user)
-        else:
-            return "No quotes found for " + command
+        author = command
+        cursor.execute('''
+        SELECT author, text FROM Quotes
+        WHERE chan_id = %s
+        AND author = %s''', (chan_id, author))
+        list_quotes = []
+        for i in cursor:
+            list_quotes.append(i)
+        return formatQuote(list_quotes)

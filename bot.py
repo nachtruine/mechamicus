@@ -4,11 +4,10 @@ import discord
 import sys
 
 from datetime import datetime
-from functions import dice, deck, gcs, quote
+from functions import dice, deck, gcs, quote, db
 from functions.dice import total_dice_regex
 
 token = sys.argv[1]
-gcsKey = sys.argv[2]
 
 pfsrd_cx = '010353485282640597323:i406fguqdfe'
 nethys_cx = '012046020158994114137:raqss6g6jvy'
@@ -18,6 +17,7 @@ credo = ('There is no truth in flesh, only betrayal. ' +
          'There is no constancy in flesh, only decay. ' +
          'There is no certainty in flesh but death.')
 decks = {}
+conn = db.connect()
 bot = discord.Client()
 
 
@@ -25,7 +25,6 @@ bot = discord.Client()
 async def on_ready():
     print('Logging in...')
     for server in bot.servers:
-        print('Checking into ' + server.name)
         decks[server.name] = deck.NEW_DECK.copy()
         deck.shuffleDeck(decks[server.name])
     print("I am ready to serve.")
@@ -56,7 +55,7 @@ async def on_message(msg):
                     repeat='str_content[7:]',
                     credo='credo',
                     deck='deck.parseDeckRequest(msg, decks.get(msg.server.name))',
-                    quote='quote.parseQuoteRequest(msg)',
+                    quote='quote.parseQuoteRequest(msg, conn)',
                     choose='random.choice(str_content[7:].split(\',\'))',
                     pfsrd='gcs.makeCustomSearch(\'d20pfsrd.com\', pfsrd_cx, msg, len(\'/pfsrd \'), gcsKey)',
                     nethys='gcs.makeCustomSearch(\'archivesofnethys.com\', nethys_cx, msg, len(\'/nethys \'), gcsKey)',

@@ -1,7 +1,10 @@
+import sys
 from googleapiclient.discovery import build
 
+key = sys.argv[2]
 
-def makeCustomSearch(url, cx, msg, cutoff, key):
+
+def makeCustomSearch(url, cx, msg, cutoff):
     content = str(msg.content)[cutoff:]
     service = build('customsearch', 'v1', developerKey=key)
     response = service.cse().list(q=str(content), num='1', siteSearch=url, cx=cx).execute()
