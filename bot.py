@@ -16,6 +16,27 @@ credo = ('There is no truth in flesh, only betrayal. ' +
          'There is no strength in flesh, only weakness. ' +
          'There is no constancy in flesh, only decay. ' +
          'There is no certainty in flesh but death.')
+eight_ball = ['It is the will of the Omnissiah.',
+              'The Omnissiah has decreed it so.',
+              'There can be no doubt to it.',
+              'The Imperium marches in its favor.',
+              'Rely on it, and the Machine God.',
+              'The Astronomican agrees.',
+              'It is as the Astronomican expects.',
+              'The Omnissiah looks favorably upon it.',
+              'It must be so.',
+              'It is the will of Terra.',
+              'The Astronomican provides no answer.',
+              'The Omnissiah is silent.',
+              'The Imperium is unsure.',
+              'The Warp shrouds our answers now.',
+              'Strengthen your will and try again.',
+              'To ask that would be heresy.',
+              'The Omnissiah frowns upon it.',
+              'The Astronomican expects otherwise.',
+              'To allow this would invoke Chaos. So no.',
+              'This is against the Emperor\'s will.'
+              ]
 decks = {}
 conn = db.connect()
 bot = discord.Client()
@@ -59,7 +80,8 @@ async def on_message(msg):
                     choose='random.choice(str_content[7:].split(\',\'))',
                     pfsrd='gcs.makeCustomSearch(\'d20pfsrd.com\', pfsrd_cx, msg, len(\'/pfsrd \'), gcsKey)',
                     nethys='gcs.makeCustomSearch(\'archivesofnethys.com\', nethys_cx, msg, len(\'/nethys \'), gcsKey)',
-                    uptime='\'I have been up for: \' + str(datetime.now() - start_time)'
+                    uptime='\'I have been up for: \' + str(datetime.now() - start_time)',
+                    eightball='random.choice(eight_ball)'
                     )
 
     if re.search(total_dice_regex, clean_message):  # message matches dice regex
@@ -70,16 +92,20 @@ async def on_message(msg):
         return
 
     elif str(msg.content).startswith(prefix):
-        for command in commands:
-            if str_content.startswith(command):
-                try:
-                    sendthis = str(eval(commands[command]))
-                    await bot.send_message(msg.channel, msg.author.mention + ': ' + sendthis)
-                except SyntaxError:
-                    await bot.send_message(msg.channel, commands[command])
-                except ValueError:
+        if str(msg.content)[1:] == '8ball':
+            sendthis = random.choice(eight_ball)
+            await bot.send_message(msg.channel, msg.author.mention + ': ' + sendthis)
+        else:
+            for command in commands:
+                if str_content.startswith(command):
+                    try:
+                        sendthis = str(eval(commands[command]))
+                        await bot.send_message(msg.channel, msg.author.mention + ': ' + sendthis)
+                    except SyntaxError:
+                        await bot.send_message(msg.channel, commands[command])
+                    except ValueError:
+                        return
                     return
-                return
 
 start_time = datetime.now()
 bot.run(token)
