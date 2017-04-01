@@ -46,7 +46,7 @@ bot = discord.Client()
 async def on_ready():
     print('Logging in...')
     for server in bot.servers:
-        decks[server.name] = deck.NEW_DECK.copy()
+        decks[server.name] = deck.deck_of_many_things.copy()
         deck.shuffleDeck(decks[server.name])
     print("I am ready to serve.")
 
