@@ -4,13 +4,11 @@ import discord
 import sys
 
 from datetime import datetime
-from functions import dice, deck, gcs, quote, db
+from functions import db, deck, dice, gcs, quote
 from functions.dice import total_dice_regex
 
 token = sys.argv[1]
 
-pfsrd_cx = '010353485282640597323:i406fguqdfe'
-nethys_cx = '012046020158994114137:raqss6g6jvy'
 prefix = '/'
 credo = ('There is no truth in flesh, only betrayal. ' +
          'There is no strength in flesh, only weakness. ' +
@@ -37,17 +35,22 @@ eight_ball = ['It is the will of the Omnissiah.',
               'To allow this would invoke Chaos. So no.',
               'This is against the Emperor\'s will.'
               ]
+
 decks = {}
-conn = db.connect()
 bot = discord.Client()
+
+try:
+    conn = db.connect()
+except:
+    conn = None
 
 
 @bot.event
 async def on_ready():
     print('Logging in...')
     for server in bot.servers:
-        decks[server.name] = deck.deck_of_many_things.copy()
-        deck.shuffleDeck(decks[server.name])
+        decks[server.name] = deck.NEW_DECK.copy()
+        random.shuffle(decks[server.name])
     print("I am ready to serve.")
 
 
@@ -65,47 +68,55 @@ async def on_server_join(server):
 
 @bot.event
 async def on_message(msg):
-    clean_message = str(msg.clean_content)
-    str_content = str(msg.content[1:])
-
     if msg.author.bot:
         return
-
-    commands = dict(echo='\'Echo!\'',
-                    roll='str(dice.parseDiceRequest(msg))',
-                    repeat='str_content[7:]',
-                    credo='credo',
-                    deck='deck.parseDeckRequest(msg, decks.get(msg.server.name))',
-                    quote='quote.parseQuoteRequest(msg, conn)',
-                    choose='random.choice(str_content[7:].split(\',\'))',
-                    pfsrd='gcs.makeCustomSearch(\'d20pfsrd.com\', pfsrd_cx, msg, len(\'/pfsrd \'), gcsKey)',
-                    nethys='gcs.makeCustomSearch(\'archivesofnethys.com\', nethys_cx, msg, len(\'/nethys \'), gcsKey)',
-                    uptime='\'I have been up for: \' + str(datetime.now() - start_time)',
-                    eightball='random.choice(eight_ball)'
-                    )
-
-    if re.search(total_dice_regex, clean_message):  # message matches dice regex
+    clean_message = str(msg.clean_content)
+    if re.search(total_dice_regex, clean_message):  # message matches dice regex pattern
         try:
-            await bot.send_message(msg.channel, str(msg.author.mention + ': ' + dice.parseDiceRequest(msg)))
+            await sendResponse(msg, dice.parseDiceRequest(msg))
         except TypeError:
             return
         return
 
     elif str(msg.content).startswith(prefix):
-        if str(msg.content)[1:] == '8ball':
-            sendthis = random.choice(eight_ball)
-            await bot.send_message(msg.channel, msg.author.mention + ': ' + sendthis)
+        content = parseCommand(msg)
+        await sendResponse(msg, content)
+
+
+def parseCommand(msg):
+    str_content = str(msg.content[1:])
+    command = str_content.split(' ', 1)[0]
+
+    if command == 'echo':
+        return 'Echo!'
+    elif command == 'repeat':
+        return str_content[7:]
+    elif command == 'credo':
+        return credo
+    elif command == '8ball' or command == 'eightball':
+        return random.choice(eight_ball)
+    elif command == 'choose' or command == 'ch':
+        return random.choice(str_content[len(command)+1:].split(','))
+    elif command == 'deck':
+        response = deck.parseDeckRequest(msg, decks[msg.server.name])
+        if response[0] is not None:
+            decks[msg.server.name] = response[0]
+        return response[1]
+    elif command == 'roll':
+        return dice.parseDiceRequest(msg)
+    elif command == 'pfsrd':
+        return gcs.pfsrd(msg)
+    elif command == 'nethys':
+        return gcs.nethys(msg)
+    elif command == 'quote':
+        if conn is not None:
+            return quote.parseQuoteRequest(msg, conn)
         else:
-            for command in commands:
-                if str_content.startswith(command):
-                    try:
-                        sendthis = str(eval(commands[command]))
-                        await bot.send_message(msg.channel, msg.author.mention + ': ' + sendthis)
-                    except SyntaxError:
-                        await bot.send_message(msg.channel, commands[command])
-                    except ValueError:
-                        return
-                    return
+            return 'I cannot access the database right now.'
+
+
+async def sendResponse(msg, content):
+    await bot.send_message(msg.channel, msg.author.mention + ': ' + content)
 
 start_time = datetime.now()
 bot.run(token)
