@@ -7,7 +7,10 @@ def formatQuote(list_quotes, number):
         index = random.randint(0, len(list_quotes)-1)
     else:
         index = number-1
-    selected_quote = list_quotes[index]
+    try:
+        selected_quote = list_quotes[index]
+    except IndexError:
+        return 'There\'s not that many quotes available!'
     return '{}: <{}/{}> {}'.format(selected_quote[0], index+1, len(list_quotes), selected_quote[1])
 
 
@@ -16,6 +19,21 @@ def parseQuoteRequest(msg, conn):
     serv_id = str(msg.server.id)
     chan_id = str(msg.channel.id)
     cursor = conn.cursor()
+    try:
+        number = int(command)
+        cursor.execute('''
+                SELECT author, text FROM Quotes
+                WHERE chan_id = %s''', (chan_id,))
+        list_quotes = []
+        for i in cursor:
+            list_quotes.append(i)
+        if len(list_quotes) < 1:
+            return 'No quotes found for this server.'
+        return formatQuote(list_quotes, number)
+    except ValueError:
+        pass
+    except TypeError:
+        pass
     if len(command) < 1:
         cursor.execute('''
         SELECT author, text FROM Quotes
@@ -25,7 +43,7 @@ def parseQuoteRequest(msg, conn):
             list_quotes.append(i)
         if len(list_quotes) < 1:
             return 'No quotes found for this server.'
-        return formatQuote(list_quotes)
+        return formatQuote(list_quotes, 0)
     elif command.startswith('add'):
         trash, author, content = command.split(' ', 2)
         cursor.execute('''
