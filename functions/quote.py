@@ -2,8 +2,11 @@ import random
 from datetime import datetime
 
 
-def formatQuote(list_quotes):
-    index = random.randint(0, len(list_quotes)-1)
+def formatQuote(list_quotes, number):
+    if number <= 0:
+        index = random.randint(0, len(list_quotes)-1)
+    else:
+        index = number-1
     selected_quote = list_quotes[index]
     return '{}: <{}/{}> {}'.format(selected_quote[0], index+1, len(list_quotes), selected_quote[1])
 
@@ -32,7 +35,11 @@ def parseQuoteRequest(msg, conn):
         conn.commit()
         return 'Quote added!'
     else:
-        author = command
+        try:
+            author, number = command.rsplit(' ', 1)
+        except:
+            author = command
+            number = 0
         cursor.execute('''
         SELECT author, text FROM Quotes
         WHERE chan_id = %s
@@ -42,4 +49,4 @@ def parseQuoteRequest(msg, conn):
             list_quotes.append(i)
         if len(list_quotes) < 1:
             return 'No quotes found for ' + author
-        return formatQuote(list_quotes)
+        return formatQuote(list_quotes, int(number))

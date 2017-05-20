@@ -29,8 +29,6 @@ def __rollDice(mod, num, sides):
                 roll = random.randint(1, sides)
                 listResults.append(roll)
                 result -= roll
-        else:
-            print('uh oh')
         return result
 
 
@@ -93,10 +91,11 @@ def parseDiceRequest(msg):
     while command is not "":
         try:
             add_result = __parseSingleRequest(command)
+            roll_result += add_result
         except AttributeError:
             return None
-        roll_result += add_result
         command = __removeUsedRequest(command)
+
     if len(comment) > 0:
         end_result = '\"' + comment + '\": ' + str(listResults) + ' -> **' + str(roll_result) + '**'
     else:
