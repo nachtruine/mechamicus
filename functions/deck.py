@@ -35,6 +35,61 @@ deck_of_many_things = ['Balance - Change alignment instantly. If you fail to act
                        'Throne - Gain a +6 bonus on Diplomacy checks plus a small castle.',
                        'Vizier - Know the answer to your next dilemma.',
                        'The Void - Your soul is sucked from your body and placed in another plane. Draw no more cards.']
+harrow_deck = ['The Paladin - STR LG',
+               'The Keep - STR NG',
+               'The Big Sky - STR CG',
+               'The Forge - STR LN',
+               'The Bear - STR TN',
+               'The Uprising - STR CN',
+               'The Fiend - STR LE',
+               'The Beating - STR NE',
+               'The Cyclone - STR CE',
+               'The Dance - DEX LG',
+               'The Cricket - DEX NG',
+               'The Juggler - DEX CG',
+               'The Locksmith - DEX LN',
+               'The Peacock - DEX TN',
+               'The Rabbit Prince - DEX CN',
+               'The Avalanche - DEX LE',
+               'The Crows - DEX NE',
+               'The Demon\'s Lantern - DEX CE',
+               'The Trumpet - CON LG',
+               'The Survivor - CON NG',
+               'The Desert - CON CG',
+               'The Brass Dwarf - CON LN',
+               'The Teamster - CON TN',
+               'The Mountain Man - CON CN',
+               'The Tangled Briar - CON LE',
+               'The Sickness - CON NE',
+               'The Waxworks - CON CE',
+               'The Hidden Truth - INT LG',
+               'The Wanderer - INT NG',
+               'The Joke - INT CG',
+               'The Inquisitor - INT LN',
+               'The Foreign Trader - INT TN',
+               'The Vision - INT CN',
+               'The Rakshasa - INT LE',
+               'The Idiot - INT NE',
+               'The Snakebite - INT CE',
+               'The Winged Serpent - WIS LG',
+               'The Midwife - WIS NG',
+               'The Publican - WIS CG',
+               'The Queen Mother - WIS LN',
+               'The Owl - WIS TN',
+               'The Carnival - WIS CN',
+               'The Eclipse - WIS LE',
+               'The Mute Hag - WIS NE',
+               'The Lost - WIS CE',
+               'The Empty Throne - CHA LG',
+               'The Theatre - CHA NG',
+               'The Unicorn - CHA CG',
+               'The Marriage - CHA LN',
+               'The Twin - CHA TN',
+               'The Courtesan - CHA CN',
+               'The Tyrant - CHA LE',
+               'The Betrayal - CHA NE',
+               'The Liar - CHA CE'
+               ]
 
 
 def parseDeckRequest(msg, thisdeck):
@@ -59,6 +114,10 @@ def parseDeckRequest(msg, thisdeck):
         elif subcommand.startswith('normal'):
             newstate = 'a regular deck of playing cards.'
             thisdeck = NEW_DECK.copy()
+            shuffle(thisdeck)
+        elif subcommand.startswith('harrow'):
+            newstate = 'the harrow deck!'
+            thisdeck = harrow_deck.copy()
             shuffle(thisdeck)
         return thisdeck, 'Deck changed to ' + newstate
     elif command.startswith('draw'):
