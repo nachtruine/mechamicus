@@ -96,7 +96,11 @@ def parseCommand(msg):
     elif command == '8ball' or command == 'eightball':
         return random.choice(eight_ball)
     elif command == 'choose' or command == 'ch':
-        return random.choice(str_content[len(command)+1:].split(','))
+        result = ""
+        if len(str_content[len(command)+1:]) > 0:
+            while result == "":
+                result = random.choice(str_content[len(command)+1:].split(','))
+            return random.choice(str_content[len(command)+1:].split(','))
     elif command == 'deck':
         response = deck.parseDeckRequest(msg, decks[msg.server.name])
         if response[0] is not None:
@@ -116,7 +120,8 @@ def parseCommand(msg):
 
 
 async def sendResponse(msg, content):
-    await bot.send_message(msg.channel, msg.author.mention + ': ' + content)
+    if content is str:
+        await bot.send_message(msg.channel, msg.author.mention + ': ' + content)
 
 start_time = datetime.now()
 bot.run(token)
