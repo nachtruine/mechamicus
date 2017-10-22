@@ -120,8 +120,7 @@ def parseCommand(msg):
 
 
 async def sendResponse(msg, content):
-    if content is str:
-        await bot.send_message(msg.channel, msg.author.mention + ': ' + content)
+    await bot.send_message(msg.channel, msg.author.mention + ': ' + content)
 
 start_time = datetime.now()
 bot.run(token)
