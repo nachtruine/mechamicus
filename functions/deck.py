@@ -92,7 +92,7 @@ harrow_deck = ['The Paladin - STR LG',
                ]
 
 
-def parseDeckRequest(msg, thisdeck):
+def parse_deck_request(msg, thisdeck):
     subcommand = ''
     try:
         trash, command, subcommand = str(msg.content).split(' ')

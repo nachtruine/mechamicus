@@ -2,7 +2,7 @@ import random
 from datetime import datetime
 
 
-def formatQuote(list_quotes, number):
+def format_quote(list_quotes, number):
     if number <= 0:
         index = random.randint(0, len(list_quotes)-1)
     else:
@@ -14,7 +14,7 @@ def formatQuote(list_quotes, number):
     return '{}: <{}/{}> {}'.format(selected_quote[0], index+1, len(list_quotes), selected_quote[1])
 
 
-def parseQuoteRequest(msg, conn):
+def parse_quote_request(msg, conn):
     command = str(msg.clean_content)[len('/quote '):]
     serv_id = str(msg.server.id)
     chan_id = str(msg.channel.id)
@@ -29,7 +29,7 @@ def parseQuoteRequest(msg, conn):
             list_quotes.append(i)
         if len(list_quotes) < 1:
             return 'No quotes found for this server.'
-        return formatQuote(list_quotes, number)
+        return format_quote(list_quotes, number)
     except ValueError:
         pass
     except TypeError:
@@ -43,7 +43,7 @@ def parseQuoteRequest(msg, conn):
             list_quotes.append(i)
         if len(list_quotes) < 1:
             return 'No quotes found for this server.'
-        return formatQuote(list_quotes, 0)
+        return format_quote(list_quotes, 0)
     elif command.startswith('add'):
         trash, author, content = command.split(' ', 2)
         cursor.execute('''
@@ -67,4 +67,4 @@ def parseQuoteRequest(msg, conn):
             list_quotes.append(i)
         if len(list_quotes) < 1:
             return 'No quotes found for ' + author
-        return formatQuote(list_quotes, int(number))
+        return format_quote(list_quotes, int(number))

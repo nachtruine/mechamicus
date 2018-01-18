@@ -6,7 +6,7 @@ __bad_regex = r'^([+-])(\d+)$'
 listResults = []
 
 
-def __rollDice(mod, num, sides):
+def __roll_dice(mod, num, sides):
     result = 0
     num = int(num)
 
@@ -32,7 +32,7 @@ def __rollDice(mod, num, sides):
         return result
 
 
-def __parseSingleRequest(cmd):
+def __parse_single_request(cmd):
     single_search = re.match(__single_dice_regex, cmd)
     mod = single_search.group(1)
     num = single_search.group(2)
@@ -40,14 +40,14 @@ def __parseSingleRequest(cmd):
     flatmod = single_search.group(4)
     flatnum = single_search.group(5)
     if flatmod is None and flatnum is None:
-        result = __rollDice(mod, num, sides)
+        result = __roll_dice(mod, num, sides)
         return result
     elif mod is None and num is None and sides is None:
-        result = __rollDice(flatmod, flatnum, -1)
+        result = __roll_dice(flatmod, flatnum, -1)
         return result
 
 
-def __removeUsedRequest(cmd):
+def __remove_used_request(cmd):
     length = 1
 
     single_search = re.match(__single_dice_regex, cmd)
@@ -72,7 +72,7 @@ def __removeUsedRequest(cmd):
     return cmd
 
 
-def parseDiceRequest(msg):
+def parse_dice_request(msg):
     content = str(msg.content)
     comment = ''
     if str(msg.content).startswith('/roll '):
@@ -90,11 +90,11 @@ def parseDiceRequest(msg):
 
     while command is not "":
         try:
-            add_result = __parseSingleRequest(command)
+            add_result = __parse_single_request(command)
             roll_result += add_result
         except AttributeError:
             return None
-        command = __removeUsedRequest(command)
+        command = __remove_used_request(command)
 
     if len(comment) > 0:
         end_result = '\"' + comment + '\": ' + str(listResults) + ' -> **' + str(roll_result) + '**'

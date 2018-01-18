@@ -1,14 +1,16 @@
 import sys
 from googleapiclient.discovery import build
 
-pfsrd_cx = '006680642033474972217:6zo0hx_wle8'
-nethys_cx = '012046020158994114137:raqss6g6jvy'
+cx = '002728055490769483510:ekrupke_ugg'
 key = sys.argv[2]
 
 
-def makeCustomSearch(url, cx, content):
+def make_custom_search(url, content, include_snippet):
     service = build('customsearch', 'v1', developerKey=key)
-    response = service.cse().list(q=str(content), num='1', siteSearch=url, cx=cx).execute()
+    if url != '':
+        response = service.cse().list(q=str(content), num='1', siteSearch=url, cx=cx).execute()
+    else:
+        response = service.cse().list(q=str(content), num='1', cx=cx).execute()
     try:
         title = str(response['items'][0]['title'])
         link = str(response['items'][0]['link'])
@@ -16,12 +18,31 @@ def makeCustomSearch(url, cx, content):
         snippet = snippet.replace('\n', '')
     except KeyError:
         return 'There\'s nothing to be found.'
-    return '**{0}**\n**Link: ** {1}\n**Snippet: ** {2}'.format(title, link, snippet)
+    if include_snippet:
+        return '**{0}**\n**Link: ** {1}\n**Snippet: ** {2}'.format(title, link, snippet)
+    else:
+        return '**{0}**\n**Link: ** {1}'.format(title, link)
 
 
 def nethys(msg):
-    return makeCustomSearch('archivesofnethys.com', nethys_cx, msg.content[len('/nethys '):])
+    return make_custom_search('archivesofnethys.com', msg.content[len('/nethys '):], True)
 
 
 def pfsrd(msg):
-    return makeCustomSearch('d20pfsrd.com', pfsrd_cx, msg.content[len('/pfsrd '):])
+    return make_custom_search('d20pfsrd.com', msg.content[len('/pfsrd '):], True)
+
+
+def google(msg):
+    return make_custom_search('', msg.content[len('/google '):], True)
+
+
+def g(msg):
+    return make_custom_search('', msg.content[len('/g '):], True)
+
+
+def youtube(msg):
+    return make_custom_search('youtube.com', msg.content[len('/youtube '):], False)
+
+
+def yt(msg):
+    return make_custom_search('youtube.com', msg.content[len('/yt '):], False)

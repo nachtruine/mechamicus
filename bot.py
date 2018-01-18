@@ -73,17 +73,17 @@ async def on_message(msg):
     clean_message = str(msg.clean_content)
     if re.search(total_dice_regex, clean_message):  # message matches dice regex pattern
         try:
-            await sendResponse(msg, dice.parseDiceRequest(msg))
+            await send_response(msg, dice.parse_dice_request(msg))
         except TypeError:
             return
         return
 
     elif str(msg.content).startswith(prefix):
-        content = parseCommand(msg)
-        await sendResponse(msg, content)
+        content = parse_command(msg)
+        await send_response(msg, content)
 
 
-def parseCommand(msg):
+def parse_command(msg):
     str_content = str(msg.content[1:])
     command = str_content.split(' ', 1)[0]
 
@@ -102,24 +102,32 @@ def parseCommand(msg):
                 result = random.choice(str_content[len(command)+1:].split(','))
             return random.choice(str_content[len(command)+1:].split(','))
     elif command == 'deck':
-        response = deck.parseDeckRequest(msg, decks[msg.server.name])
+        response = deck.parse_deck_request(msg, decks[msg.server.name])
         if response[0] is not None:
             decks[msg.server.name] = response[0]
         return response[1]
     elif command == 'roll':
-        return dice.parseDiceRequest(msg)
+        return dice.parse_dice_request(msg)
     elif command == 'pfsrd':
         return gcs.pfsrd(msg)
     elif command == 'nethys':
         return gcs.nethys(msg)
+    elif command == 'google':
+        return gcs.google(msg)
+    elif command == 'g':
+        return gcs.g(msg)
+    elif command == 'youtube':
+        return gcs.youtube(msg)
+    elif command == 'yt':
+        return gcs.yt(msg)
     elif command == 'quote':
         if conn is not None:
-            return quote.parseQuoteRequest(msg, conn)
+            return quote.parse_quote_request(msg, conn)
         else:
             return 'I cannot access the database right now.'
 
 
-async def sendResponse(msg, content):
+async def send_response(msg, content):
     await bot.send_message(msg.channel, msg.author.mention + ': ' + content)
 
 start_time = datetime.now()
