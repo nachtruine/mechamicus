@@ -33,11 +33,11 @@ def pfsrd(msg):
 
 
 def google(msg):
-    return make_custom_search('', msg.content[len('/google '):], True)
+    return make_custom_search('', msg.content[len('/google '):], False)
 
 
 def g(msg):
-    return make_custom_search('', msg.content[len('/g '):], True)
+    return make_custom_search('', msg.content[len('/g '):], False)
 
 
 def youtube(msg):
