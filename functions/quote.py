@@ -61,7 +61,7 @@ def parse_quote_request(msg, conn):
         cursor.execute('''
         SELECT author, text FROM Quotes
         WHERE chan_id = %s
-        AND author = %s''', (chan_id, author))
+        AND LOWER(author) = LOWER(%s)''', (chan_id, author))
         list_quotes = []
         for i in cursor:
             list_quotes.append(i)
