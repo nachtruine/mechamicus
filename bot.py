@@ -68,8 +68,6 @@ def parse_command(msg):
         return 'Echo!'
     elif command == 'repeat':
         return str_content[7:]
-    elif command == 'credo':
-        return credo
     elif command == '8ball' or command == 'eightball':
         return random.choice(eight_ball)
     elif command == 'choose' or command == 'ch':
