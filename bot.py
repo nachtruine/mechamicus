@@ -6,12 +6,12 @@ import sys
 from datetime import datetime
 from functions import db, deck, dice, gcs, quote
 from functions.dice import total_dice_regex
-from functions.subfunctions import split_file
+from functions.subfunctions.split_file import split_file
 
 token = sys.argv[1]
 
 prefix = '/'
-eight_ball = split_file.eight_ball()
+eight_ball = split_file('eightball')
 
 decks = {}
 bot = discord.Client()

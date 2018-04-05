@@ -1,8 +1,10 @@
 from random import shuffle
-from functions.subfunctions import split_file
-NEW_DECK = split_file.standard_deck()
-DECK_OF_MANY_THINGS = split_file.deck_of_many_things()
-HARROW_DECK = split_file.harrow_deck()
+from functions.subfunctions.split_file import split_file
+
+
+NEW_DECK = split_file('standarddeck')
+DECK_OF_MANY_THINGS = split_file('domt')
+HARROW_DECK = split_file('harrowdeck')
 
 
 def parse_deck_request(msg, thisdeck):
