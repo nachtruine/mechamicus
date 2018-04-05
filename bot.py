@@ -6,35 +6,12 @@ import sys
 from datetime import datetime
 from functions import db, deck, dice, gcs, quote
 from functions.dice import total_dice_regex
+from functions.subfunctions import split_file
 
 token = sys.argv[1]
 
 prefix = '/'
-credo = ('There is no truth in flesh, only betrayal. ' +
-         'There is no strength in flesh, only weakness. ' +
-         'There is no constancy in flesh, only decay. ' +
-         'There is no certainty in flesh but death.')
-eight_ball = ['It is the will of the Omnissiah.',
-              'The Omnissiah has decreed it so.',
-              'There can be no doubt to it.',
-              'The Imperium marches in its favor.',
-              'Rely on it, and the Machine God.',
-              'The Astronomican agrees.',
-              'It is as the Astronomican expects.',
-              'The Omnissiah looks favorably upon it.',
-              'It must be so.',
-              'It is the will of Terra.',
-              'The Astronomican provides no answer.',
-              'The Omnissiah is silent.',
-              'The Imperium is unsure.',
-              'The Warp shrouds our answers now.',
-              'Strengthen your will and try again.',
-              'To ask that would be heresy.',
-              'The Omnissiah frowns upon it.',
-              'The Astronomican expects otherwise.',
-              'To allow this would invoke Chaos. So no.',
-              'This is against the Emperor\'s will.'
-              ]
+eight_ball = split_file.eight_ball()
 
 decks = {}
 bot = discord.Client()

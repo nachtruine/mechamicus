@@ -1,95 +1,8 @@
 from random import shuffle
-NEW_DECK = ['Joker (Colored)', 'Joker (Uncolored)',
-            '2 of Diamonds', '3 of Diamonds', '4 of Diamonds', '5 of Diamonds', '6 of Diamonds', '7 of Diamonds',
-            '8 of Diamonds', '9 of Diamonds', '10 of Diamonds', 'Jack of Diamonds', 'Queen of Diamonds',
-            'King of Diamonds', 'Ace of Diamonds',
-            '2 of Clubs', '3 of Clubs', '4 of Clubs', '5 of Clubs', '6 of Clubs', '7 of Clubs',
-            '8 of Clubs', '9 of Clubs', '10 of Clubs', 'Jack of Clubs', 'Queen of Clubs',
-            'King of Clubs', 'Ace of Clubs',
-            '2 of Hearts', '3 of Hearts', '4 of Hearts', '5 of Hearts', '6 of Hearts', '7 of Hearts',
-            '8 of Hearts', '9 of Hearts', '10 of Hearts', 'Jack of Hearts', 'Queen of Hearts',
-            'King of Hearts', 'Ace of Hearts',
-            '2 of Spades', '3 of Spades', '4 of Spades', '5 of Spades', '6 of Spades', '7 of Spades',
-            '8 of Spades', '9 of Spades', '10 of Spades', 'Jack of Spades', 'Queen of Spades',
-            'King of Spades', 'Ace of Spades'
-            ]
-deck_of_many_things = ['Balance - Change alignment instantly. If you fail to act accordingly, gain a negative level.',
-                       'Comet - Defeat the next monster single-handedly you meet to gain one level.',
-                       'Donjon - Become imprisoned. All gear and spells are stripped. Draw no more cards.',
-                       'Eurayle - –1 penalty on all saving throws permanently.',
-                       'The Fates - You, and only you, may avoid any situation you choose, once.',
-                       'Flames - Gain the enmity of an outsider.',
-                       'Fool - Lose 10,000 experience points and you must draw again. Discard this card from the deck.',
-                       'Gem - Gain your choice of 25 pieces of jewelry or 50 gems, for a total of 50,000 gp.',
-                       'Idiot - Lose 1d4+1 Intelligence. You may draw again.',
-                       'Jester - Gain 10,000 XP or two more draws from the deck. Discard this card from the deck.',
-                       'Key - Gain a major magic weapon.',
-                       'Knight - Gain the service of a loyal 4th-level fighter.',
-                       'Moon - You are granted 1d4 wishes.',
-                       'Rogue - One of your friends turns against you.',
-                       'Ruin - Immediately lose all non-magical wealth and property.',
-                       'Skull - Defeat a dread wraith in single combat or be forever destroyed.',
-                       'Star - Immediately gain a +2 inherent bonus to one ability score.',
-                       'Sun - Gain beneficial medium wondrous item and 50,000 XP.',
-                       'Talons - All magic items you possess disappear permanently.',
-                       'Throne - Gain a +6 bonus on Diplomacy checks plus a small castle.',
-                       'Vizier - Know the answer to your next dilemma.',
-                       'The Void - Your soul is sucked from your body and placed in another plane. Draw no more cards.']
-harrow_deck = ['The Paladin - STR LG',
-               'The Keep - STR NG',
-               'The Big Sky - STR CG',
-               'The Forge - STR LN',
-               'The Bear - STR TN',
-               'The Uprising - STR CN',
-               'The Fiend - STR LE',
-               'The Beating - STR NE',
-               'The Cyclone - STR CE',
-               'The Dance - DEX LG',
-               'The Cricket - DEX NG',
-               'The Juggler - DEX CG',
-               'The Locksmith - DEX LN',
-               'The Peacock - DEX TN',
-               'The Rabbit Prince - DEX CN',
-               'The Avalanche - DEX LE',
-               'The Crows - DEX NE',
-               'The Demon\'s Lantern - DEX CE',
-               'The Trumpet - CON LG',
-               'The Survivor - CON NG',
-               'The Desert - CON CG',
-               'The Brass Dwarf - CON LN',
-               'The Teamster - CON TN',
-               'The Mountain Man - CON CN',
-               'The Tangled Briar - CON LE',
-               'The Sickness - CON NE',
-               'The Waxworks - CON CE',
-               'The Hidden Truth - INT LG',
-               'The Wanderer - INT NG',
-               'The Joke - INT CG',
-               'The Inquisitor - INT LN',
-               'The Foreign Trader - INT TN',
-               'The Vision - INT CN',
-               'The Rakshasa - INT LE',
-               'The Idiot - INT NE',
-               'The Snakebite - INT CE',
-               'The Winged Serpent - WIS LG',
-               'The Midwife - WIS NG',
-               'The Publican - WIS CG',
-               'The Queen Mother - WIS LN',
-               'The Owl - WIS TN',
-               'The Carnival - WIS CN',
-               'The Eclipse - WIS LE',
-               'The Mute Hag - WIS NE',
-               'The Lost - WIS CE',
-               'The Empty Throne - CHA LG',
-               'The Theatre - CHA NG',
-               'The Unicorn - CHA CG',
-               'The Marriage - CHA LN',
-               'The Twin - CHA TN',
-               'The Courtesan - CHA CN',
-               'The Tyrant - CHA LE',
-               'The Betrayal - CHA NE',
-               'The Liar - CHA CE'
-               ]
+from functions.subfunctions import split_file
+NEW_DECK = split_file.standard_deck()
+DECK_OF_MANY_THINGS = split_file.deck_of_many_things()
+HARROW_DECK = split_file.harrow_deck()
 
 
 def parse_deck_request(msg, thisdeck):
@@ -109,7 +22,7 @@ def parse_deck_request(msg, thisdeck):
         newstate = ''
         if subcommand.startswith('domt'):
             newstate = 'the Deck of Many Things!'
-            thisdeck = deck_of_many_things.copy()
+            thisdeck = DECK_OF_MANY_THINGS.copy()
             shuffle(thisdeck)
         elif subcommand.startswith('normal'):
             newstate = 'a regular deck of playing cards.'
@@ -117,7 +30,7 @@ def parse_deck_request(msg, thisdeck):
             shuffle(thisdeck)
         elif subcommand.startswith('harrow'):
             newstate = 'the harrow deck!'
-            thisdeck = harrow_deck.copy()
+            thisdeck = HARROW_DECK.copy()
             shuffle(thisdeck)
         return thisdeck, 'Deck changed to ' + newstate
     elif command.startswith('draw'):
