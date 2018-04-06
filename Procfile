@@ -1,1 +1,1 @@
-worker: python -m bot.py $token $gcsKey $DATABASE_URL
+worker: python -m bot.py $token $gcsKey $DATABASE_URL $STORJ_EMAIL $STORJ_PASSWORD
