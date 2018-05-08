@@ -27,4 +27,4 @@ def parse_remember_request(msg, conn):
         AND LOWER(id) = LOWER(%s)
         ''', (serv_id, command))
         for i in cursor:  # will only ever have one result
-            return i[0], False
+            return '```\n' + i[0] + '\n```'
