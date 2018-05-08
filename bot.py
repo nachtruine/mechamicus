@@ -4,7 +4,7 @@ import discord
 import sys
 
 from datetime import datetime
-from functions import db, deck, dice, gcs, quote
+from functions import db, deck, dice, gcs, quote, remember
 from functions.dice import total_dice_regex
 from functions.subfunctions.split_file import split_file
 
@@ -98,6 +98,11 @@ def parse_command(msg):
     elif command == 'quote':
         if conn is not None:
             return quote.parse_quote_request(msg, conn)
+        else:
+            return 'I cannot access the database right now.'
+    elif command == 'remember':
+        if conn is not None:
+            return remember.parse_remember_request(msg, conn)
         else:
             return 'I cannot access the database right now.'
 
