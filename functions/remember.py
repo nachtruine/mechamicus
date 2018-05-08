@@ -6,7 +6,7 @@ def parse_remember_request(msg, conn):
         trash, memory_id, content = command.split(' ', 2)
         cursor.execute('''
         INSERT INTO Memory(id, serv_id, text)
-        VALUES(%s, %s, %s, %s)
+        VALUES(%s, %s, %s)
         ''', (memory_id, serv_id, content))
         conn.commit()
         return 'I will remember that!'
