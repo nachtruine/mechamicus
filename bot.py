@@ -56,8 +56,9 @@ async def on_message(msg):
         return
 
     elif str(msg.content).startswith(prefix):
-        content = parse_command(msg)
-        await send_response(msg, content)
+        to_format = False
+        content, to_format = parse_command(msg)
+        await send_response(msg, content, to_format)
 
 
 def parse_command(msg):
@@ -107,8 +108,11 @@ def parse_command(msg):
             return 'I cannot access the database right now.'
 
 
-async def send_response(msg, content):
-    await bot.send_message(msg.channel, msg.author.mention + ': ' + content)
+async def send_response(msg, content, to_mention):
+    if to_mention:
+        await bot.send_message(msg.channel, msg.author.mention + ': ' + content)
+    else:
+        await bot.send_message(msg.channel, '```\n' + content + '\n```')
 
 start_time = datetime.now()
 bot.run(token)
