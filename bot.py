@@ -49,7 +49,7 @@ async def on_message(msg):
         return
     clean_message = str(msg.clean_content)
     first_result = re.search(dice_regex, clean_message)
-    if first_result[0] == '' and first_result[5] != '':
+    if first_result is not None and first_result[0] == '' and first_result[5] != '':
         try:
             await send_response(msg, dice.parse_dice_request(msg))
         except TypeError:

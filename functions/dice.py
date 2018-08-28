@@ -40,6 +40,5 @@ def parse_dice_request(msg):
         end_result = '\"' + comment + '\": ' + str(listResults) + ' -> **' + str(roll_result) + '**'
     else:
         end_result = str(listResults) + ' -> **' + str(roll_result) + '**'
-    print(end_result)
     listResults.clear()
     return end_result
