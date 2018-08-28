@@ -48,8 +48,9 @@ async def on_message(msg):
     if msg.author.bot:
         return
     clean_message = str(msg.clean_content)
-    first_result = re.search(dice_regex, clean_message)
-    if first_result is not None and first_result[0] == '' and first_result[5] != '':
+    results = re.findall(dice_regex, clean_message)
+    print(results)
+    if len(results) > 0 and results[0][0] == '' and results[0][5] != '':
         try:
             await send_response(msg, dice.parse_dice_request(msg))
         except TypeError:
