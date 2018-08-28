@@ -48,13 +48,12 @@ async def on_message(msg):
     if msg.author.bot:
         return
     clean_message = str(msg.clean_content)
-    if re.search(dice_regex, clean_message) is not None:  # message matches dice regex pattern
+    first_result = re.search(dice_regex, clean_message)
+    if first_result[0] == '' and first_result[5] != '':
         try:
             await send_response(msg, dice.parse_dice_request(msg))
         except TypeError:
             return
-        return
-
     elif str(msg.content).startswith(prefix):
         content = parse_command(msg)
         await send_response(msg, content)
