@@ -12,6 +12,7 @@ token = sys.argv[1]
 
 prefix = '/'
 eight_ball = split_file('eightball')
+dice_double_check = r'^(?:(\d+)d(\d+))'
 
 decks = {}
 bot = discord.Client()
@@ -49,7 +50,8 @@ async def on_message(msg):
         return
     clean_message = str(msg.clean_content)
     results = re.findall(dice_regex, clean_message)
-    if len(results) > 0 and results[0][0] == '' and results[0][3] == '' and results[0][4] == '':
+    doublecheck = re.search(dice_double_check, clean_message)
+    if len(results) > 0 and results[0][0] == '' and results[0][3] == '' and results[0][4] == '' and doublecheck is not None:
         try:
             await send_response(msg, dice.parse_dice_request(msg))
         except TypeError:
