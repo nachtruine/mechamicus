@@ -5,7 +5,7 @@ import sys
 
 from datetime import datetime
 from functions import db, deck, dice, gcs, quote, remember
-from functions.dice import total_dice_regex
+from functions.dice import dice_regex
 from functions.subfunctions.split_file import split_file
 
 token = sys.argv[1]
@@ -48,7 +48,7 @@ async def on_message(msg):
     if msg.author.bot:
         return
     clean_message = str(msg.clean_content)
-    if re.search(total_dice_regex, clean_message):  # message matches dice regex pattern
+    if re.search(dice_regex, clean_message) is not None:  # message matches dice regex pattern
         try:
             await send_response(msg, dice.parse_dice_request(msg))
         except TypeError:
