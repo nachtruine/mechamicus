@@ -49,8 +49,7 @@ async def on_message(msg):
         return
     clean_message = str(msg.clean_content)
     results = re.findall(dice_regex, clean_message)
-    print(results)
-    if len(results) > 0 and results[0][0] == '' and results[0][5] != '':
+    if len(results) > 0 and results[0][0] == '' and results[0][3] == '' and results[0][4] == '':
         try:
             await send_response(msg, dice.parse_dice_request(msg))
         except TypeError:
