@@ -34,6 +34,8 @@ def parse_deck_request(msg, thisdeck):
             newstate = 'the harrow deck!'
             thisdeck = HARROW_DECK.copy()
             shuffle(thisdeck)
+        else:
+            return thisdeck, 'Deck not recognized.'
         return thisdeck, 'Deck changed to ' + newstate
     elif command.startswith('draw'):
         if len(thisdeck) < 1:
