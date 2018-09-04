@@ -42,7 +42,10 @@ def parse_deck_request(msg, thisdeck):
             return None, 'Deck is empty!'
         hand = []
         if subcommand is not '':
-            num = int(subcommand)
+            if subcommand.isnumeric():
+                num = int(subcommand)
+            else:
+                return None, 'Invalid input.'
         else:
             num = 1
         for i in range(num):
