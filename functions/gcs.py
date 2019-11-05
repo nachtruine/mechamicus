@@ -25,7 +25,7 @@ def make_custom_search(url, content, include_snippet):
 
 
 def nethys(msg):
-    return make_custom_search('archivesofnethys.com', msg.content[len('/nethys '):], True)
+    return make_custom_search('aonprd.com', msg.content[len('/nethys '):], True)
 
 
 def pfsrd(msg):
