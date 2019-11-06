@@ -34,13 +34,18 @@ def parse_deck_request(msg, thisdeck):
             newstate = 'the harrow deck!'
             thisdeck = HARROW_DECK.copy()
             shuffle(thisdeck)
+        else:
+            return thisdeck, 'Deck not recognized.'
         return thisdeck, 'Deck changed to ' + newstate
     elif command.startswith('draw'):
         if len(thisdeck) < 1:
             return None, 'Deck is empty!'
         hand = []
         if subcommand is not '':
-            num = int(subcommand)
+            if subcommand.isnumeric():
+                num = int(subcommand)
+            else:
+                return None, 'Invalid input.'
         else:
             num = 1
         for i in range(num):
