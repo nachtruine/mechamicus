@@ -42,7 +42,7 @@ def parse_dice_request(msg):
             comment = x[4]
     for i in range(len(listResults)):
         if maxRolls[i] == 1:
-            listResults[i] = str(listResults[i])
+            listResults[i] = '**' + str(listResults[i]) + '**'
     if len(comment) > 0:
         end_result = '\"' + comment + '\": ' + str(listResults) + ' -> **' + str(roll_result) + '**'
     else:
