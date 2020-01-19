@@ -2,17 +2,21 @@ import random
 import re
 dice_regex = r'(?:([+-]?)(\d+)d(\d+))|(?:([+-]\d+))| (.+$)'
 listResults = []
-
+maxRolls = []
 
 def __roll_dice(mod, num, sides):
     result = 0
     num = int(num)
-
     sides = int(sides)
+    
     if mod.casefold() == '' or mod.casefold() == '+':
         for i in range(num):
             roll = random.randint(1, sides)
             listResults.append(roll)
+            if roll == sides:
+                maxRolls.append(1)
+            else:
+                maxRolls.append(0)
             result += roll
     elif mod.casefold() == '-':
         for i in range(num):
@@ -36,6 +40,9 @@ def parse_dice_request(msg):
             roll_result += int(x[3])
         else:
             comment = x[4]
+    for i in listResults:
+        if maxRolls[i] == 1:
+            listResults[i] = str(listResults[i])
     if len(comment) > 0:
         end_result = '\"' + comment + '\": ' + str(listResults) + ' -> **' + str(roll_result) + '**'
     else:
