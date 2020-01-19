@@ -48,4 +48,5 @@ def parse_dice_request(msg):
     else:
         end_result = str(listResults) + ' -> **' + str(roll_result) + '**'
     listResults.clear()
+    maxRolls.clear()
     return end_result
