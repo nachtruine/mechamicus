@@ -40,7 +40,7 @@ def parse_dice_request(msg):
             roll_result += int(x[3])
         else:
             comment = x[4]
-    for i in listResults:
+    for i in range(len(listResults)):
         if maxRolls[i] == 1:
             listResults[i] = str(listResults[i])
     if len(comment) > 0:
