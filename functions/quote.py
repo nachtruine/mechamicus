@@ -16,7 +16,7 @@ def format_quote(list_quotes, number):
 
 def parse_quote_request(msg, conn):
     command = str(msg.clean_content)[len('/quote '):]
-    serv_id = str(msg.server.id)
+    serv_id = str(msg.guild.id)
     chan_id = str(msg.channel.id)
     cursor = conn.cursor()
     try:

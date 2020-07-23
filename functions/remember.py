@@ -1,6 +1,6 @@
 def parse_remember_request(msg, conn):
     command = str(msg.clean_content)[len('/remember '):]
-    serv_id = str(msg.server.id)
+    serv_id = str(msg.guild.id)
     cursor = conn.cursor()
     if command.startswith('add'):
         trash, memory_id, content = command.split(' ', 2)

@@ -26,7 +26,7 @@ except:
 @bot.event
 async def on_ready():
     print('Logging in...')
-    for server in bot.servers:
+    for server in bot.guilds:
         decks[server.name] = deck.NEW_DECK.copy()
         random.shuffle(decks[server.name])
     print("I am ready to serve.")
@@ -34,13 +34,13 @@ async def on_ready():
 
 @bot.event
 async def on_member_join(member):
-    await bot.send_message(member.server.default_channel,
-                           "Welcome, " + member.display_name + ", to " + member.server.name + "!")
+    await member.guild.default_channel.send(
+                           "Welcome, " + member.display_name + ", to " + member.guild.name + "!")
 
 
 @bot.event
-async def on_server_join(server):
-    await bot.send_message(server.default_channel,
+async def on_guild_join(server):
+    await server.default_channel.send(
                            "Hello, people of " + server.name + "! I am " + bot.user.display_name + "!")
 
 
@@ -78,9 +78,9 @@ def parse_command(msg):
                 result = random.choice(str_content[len(command)+1:].split(','))
             return random.choice(str_content[len(command)+1:].split(','))
     elif command == 'deck':
-        response = deck.parse_deck_request(msg, decks[msg.server.name])
+        response = deck.parse_deck_request(msg, decks[msg.guild.name])
         if response[0] is not None:
-            decks[msg.server.name] = response[0]
+            decks[msg.guild.name] = response[0]
         return response[1]
     elif command == 'roll':
         return dice.parse_dice_request(msg)
@@ -109,7 +109,7 @@ def parse_command(msg):
 
 
 async def send_response(msg, content):
-    await bot.send_message(msg.channel, msg.author.mention + ': ' + content)
+    await msg.channel.send(msg.author.mention + ': ' + content)
 
 start_time = datetime.now()
 bot.run(token)

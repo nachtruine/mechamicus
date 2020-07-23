@@ -4,6 +4,7 @@ dice_regex = r'(?:([+-]?)(\d+)d(\d+))|(?:([+-]\d+))| (.+$)'
 listResults = []
 maxRolls = []
 
+
 def __roll_dice(mod, num, sides):
     result = 0
     num = int(num)
